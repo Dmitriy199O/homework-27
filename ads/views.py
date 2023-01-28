@@ -52,7 +52,7 @@ class AdView(View):
             "price": ad.price,
             "description": ad.description,
             "is_published": ad.is_published
-        }, safe=False)
+        }, safe=False, json_dumps_params={'ensure_ascii': False})
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -73,9 +73,13 @@ class CategoryView(View):
     def post(self, request):
         category_data = json.loads(request.body)
 
-        category = Ad()
+        category = Category()
         category.name = category_data.get('name')
         category.save()
+        return JsonResponse({
+            "id": category.id,
+            "name": category.name
+        }, safe=False, json_dumps_params={'ensure_ascii': False})
 
 
 class AdDetailView(DetailView):
@@ -90,7 +94,7 @@ class AdDetailView(DetailView):
             "price": ad.price,
             "description": ad.description,
             "is_published": ad.is_published
-        }, is_safe=False)
+        })
 
 
 class CategoryDetailView(DetailView):
@@ -101,4 +105,4 @@ class CategoryDetailView(DetailView):
         return JsonResponse({
             "id": category.id,
             "name": category.name,
-        }, is_safe=False)
+        })
